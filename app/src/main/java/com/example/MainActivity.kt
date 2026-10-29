@@ -50,7 +50,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.ui.components.TopHeaderBar
 import com.example.ui.screens.AnalyticsScreen
-import com.example.ui.screens.InstagramLoginScreen
+import com.example.ui.screens.TokenConnectScreen
+import com.example.work.AutopilotWorker
 import com.example.ui.screens.ProfilesScreen
 import com.example.ui.screens.QueueScreen
 import com.example.ui.screens.ScheduleScreen
@@ -69,6 +70,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        AutopilotWorker.schedule(applicationContext)
 
         setContent {
             MyApplicationTheme(darkTheme = false) {
@@ -94,6 +96,8 @@ fun InstaAutopilotAppContent(viewModel: ReelsViewModel) {
     val timeframe by viewModel.analyticsTimeframe.collectAsState()
     val userMessage by viewModel.userMessage.collectAsState()
     val isSyncingProfile by viewModel.isSyncingProfile.collectAsState()
+    val isConnecting by viewModel.isConnecting.collectAsState()
+    val connectError by viewModel.connectError.collectAsState()
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -109,10 +113,10 @@ fun InstaAutopilotAppContent(viewModel: ReelsViewModel) {
 
     // If no account is logged in yet, show the official Instagram login screen!
     if (activeProfile == null) {
-        InstagramLoginScreen(
-            onLoginSuccess = { username, fullName, category ->
-                viewModel.loginOriginalAccount(username, fullName, category)
-            }
+        TokenConnectScreen(
+            isConnecting = isConnecting,
+            error = connectError,
+            onConnect = { viewModel.connectWithToken(it) }
         )
         return
     }
