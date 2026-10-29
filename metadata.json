@@ -1,0 +1,6 @@
+{
+  "name": "Insta autopilot",
+  "description": "Instagram Reels Auto-Publisher and Creator Studio with smart optimal-time scheduling, AI captions, multi-profile OAuth integration, and engagement analytics in authentic Instagram UI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
